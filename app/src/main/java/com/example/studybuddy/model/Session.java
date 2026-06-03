@@ -12,6 +12,11 @@ public class Session implements Serializable {
     private int maxParticipants;
     private ArrayList<Student> participants;
 
+    // Empty constructor required for Firebase Firestore
+    public Session() {
+        participants = new ArrayList<>();
+    }
+
     public Session(String courseName, String topic, String time, String location,
                    int maxParticipants, ArrayList<Student> participants) {
         this.courseName = courseName;
@@ -43,6 +48,9 @@ public class Session implements Serializable {
     }
 
     public ArrayList<Student> getParticipants() {
+        if (participants == null) {
+            participants = new ArrayList<>();
+        }
         return participants;
     }
 }
