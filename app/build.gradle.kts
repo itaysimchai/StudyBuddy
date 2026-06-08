@@ -41,6 +41,7 @@ dependencies {
 
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
+
     implementation(libs.appcompat)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)

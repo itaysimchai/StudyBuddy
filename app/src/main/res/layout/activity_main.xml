@@ -3,21 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F9FA">
+    android:background="#F4F6FB"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp"
+        android:background="#1E293B">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StudyBuddy"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Find study sessions from Firebase"
+            android:textColor="#CBD5E1"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
 
         <EditText
             android:id="@+id/etSearch"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Search course"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text" />
+            android:layout_height="50dp"
+            android:layout_marginTop="18dp"
+            android:hint="Search course or topic"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="#111827"
+            android:textColorHint="#6B7280"
+            android:background="@drawable/bg_search" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -25,31 +47,39 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
+        android:background="#F4F6FB"
+        android:padding="16dp"
+        android:clipToPadding="false" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:orientation="horizontal"
         android:background="#FFFFFF"
-        android:padding="12dp"
+        android:padding="8dp"
         android:weightSum="2">
 
         <Button
             android:id="@+id/btnNavHome"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="Home" />
+            android:text="Home"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2563EB" />
 
         <Button
             android:id="@+id/btnNavProfile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Profile" />
+            android:layout_marginStart="10dp"
+            android:text="Profile"
+            android:textAllCaps="false"
+            android:textColor="#2563EB"
+            android:backgroundTint="#DBEAFE" />
+
     </LinearLayout>
 
 </LinearLayout>

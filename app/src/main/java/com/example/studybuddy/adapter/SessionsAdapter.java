@@ -2,7 +2,6 @@ package com.example.studybuddy.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studybuddy.R;
 import com.example.studybuddy.SessionDetailsActivity;
 import com.example.studybuddy.model.Session;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.SessionViewHolder> {
 
     private Context context;
-
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<Session> sessionList;
 
     public SessionsAdapter(Context context, ArrayList<Session> sessionList) {
         this.context = context;
         this.sessionList = sessionList;
-
     }
 
     @NonNull

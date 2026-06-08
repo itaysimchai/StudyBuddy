@@ -12,7 +12,6 @@ public class Session implements Serializable {
     private int maxParticipants;
     private ArrayList<Student> participants;
 
-    // Empty constructor required for Firebase Firestore
     public Session() {
         participants = new ArrayList<>();
     }

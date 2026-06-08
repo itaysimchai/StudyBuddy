@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studybuddy.adapter.SessionsAdapter;
 import com.example.studybuddy.data.FakeData;
 import com.example.studybuddy.model.Session;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseFirestore db;
 
     private RecyclerView rvSessions;
@@ -43,12 +41,11 @@ public class MainActivity extends AppCompatActivity {
         btnNavHome = findViewById(R.id.btnNavHome);
         btnNavProfile = findViewById(R.id.btnNavProfile);
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         db = FirebaseFirestore.getInstance();
 
         sessionList = new ArrayList<>();
 
-        adapter = new SessionsAdapter(this, new ArrayList<>(sessionList));
+        adapter = new SessionsAdapter(this, new ArrayList<>());
         rvSessions.setLayoutManager(new LinearLayoutManager(this));
         rvSessions.setAdapter(adapter);
 
@@ -67,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        btnNavHome.setOnClickListener(v -> {
-            // already on home
-        });
+        btnNavHome.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "You are already on Home", Toast.LENGTH_SHORT).show()
+        );
 
         btnNavProfile.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
@@ -78,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadSessionsFromFirestore() {
-        db.collection("sessions")
+        db.collection("Sessions")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     sessionList.clear();
@@ -88,15 +85,14 @@ public class MainActivity extends AppCompatActivity {
                         sessionList.add(session);
                     }
 
-                    if (sessionList.isEmpty()) {
-                        Toast.makeText(this, "No Firebase sessions found, using fake data", Toast.LENGTH_SHORT).show();
-                        sessionList = FakeData.createSessions();
-                    }
-
                     adapter.updateList(new ArrayList<>(sessionList));
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Firebase error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Firebase Error: " + e.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
 
                     sessionList = FakeData.createSessions();
                     adapter.updateList(new ArrayList<>(sessionList));
