@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studybuddy.adapter.SessionsAdapter;
-import com.example.studybuddy.data.FakeData;
 import com.example.studybuddy.model.Session;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -23,37 +24,45 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
+    private FirebaseAuth auth;
+    private FirebaseAnalytics analytics;
 
-    private RecyclerView rvSessions;
     private SessionsAdapter adapter;
     private ArrayList<Session> sessionList;
 
     private EditText etSearch;
-    private Button btnNavHome, btnNavProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rvSessions = findViewById(R.id.rvSessions);
-        etSearch = findViewById(R.id.etSearch);
-        btnNavHome = findViewById(R.id.btnNavHome);
-        btnNavProfile = findViewById(R.id.btnNavProfile);
-
+        auth = FirebaseAuth.getInstance();
+        analytics = FirebaseAnalytics.getInstance(this);
         db = FirebaseFirestore.getInstance();
 
-        sessionList = new ArrayList<>();
+        if (auth.getCurrentUser() == null) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+            return;
+        }
 
+        RecyclerView rvSessions = findViewById(R.id.rvSessions);
+        etSearch = findViewById(R.id.etSearch);
+        Button btnNavHome = findViewById(R.id.btnNavHome);
+        Button btnCreateSession = findViewById(R.id.btnCreateSession);
+        Button btnNearbySessions = findViewById(R.id.btnNearbySessions);
+        Button btnNavProfile = findViewById(R.id.btnNavProfile);
+
+        sessionList = new ArrayList<>();
         adapter = new SessionsAdapter(this, new ArrayList<>());
         rvSessions.setLayoutManager(new LinearLayoutManager(this));
         rvSessions.setAdapter(adapter);
 
-        loadSessionsFromFirestore();
-
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -61,17 +70,31 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         btnNavHome.setOnClickListener(v ->
                 Toast.makeText(MainActivity.this, "You are already on Home", Toast.LENGTH_SHORT).show()
         );
 
-        btnNavProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            startActivity(intent);
-        });
+        btnCreateSession.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, CreateSessionActivity.class))
+        );
+
+        btnNearbySessions.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, NearbySessionsActivity.class))
+        );
+
+        btnNavProfile.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class))
+        );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadSessionsFromFirestore();
     }
 
     private void loadSessionsFromFirestore() {
@@ -82,10 +105,12 @@ public class MainActivity extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Session session = document.toObject(Session.class);
+                        session.setDocumentId(document.getId());
                         sessionList.add(session);
                     }
 
                     adapter.updateList(new ArrayList<>(sessionList));
+                    analytics.logEvent("sessions_loaded", null);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(
@@ -93,9 +118,7 @@ public class MainActivity extends AppCompatActivity {
                             "Firebase Error: " + e.getMessage(),
                             Toast.LENGTH_LONG
                     ).show();
-
-                    sessionList = FakeData.createSessions();
-                    adapter.updateList(new ArrayList<>(sessionList));
+                    adapter.updateList(new ArrayList<>());
                 });
     }
 

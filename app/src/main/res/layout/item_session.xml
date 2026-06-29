@@ -3,19 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="14dp"
-    android:orientation="vertical"
-    android:padding="18dp"
     android:background="@drawable/bg_card"
-    android:elevation="3dp">
+    android:elevation="3dp"
+    android:orientation="vertical"
+    android:padding="18dp">
 
     <TextView
         android:id="@+id/tvCourse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Course Name"
+        android:textColor="#111827"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#111827" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvTopic"
@@ -23,26 +23,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:text="Topic"
-        android:textSize="15sp"
-        android:textColor="#4B5563" />
+        android:textColor="#4B5563"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/tvMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Time • Location • 0/10"
-        android:textSize="14sp"
-        android:textColor="#6B7280" />
+        android:text="Time - Location - 0/10"
+        android:textColor="#6B7280"
+        android:textSize="14sp" />
 
     <Button
         android:id="@+id/btnOpen"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="14dp"
+        android:backgroundTint="#2563EB"
         android:text="View Details"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#2563EB" />
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

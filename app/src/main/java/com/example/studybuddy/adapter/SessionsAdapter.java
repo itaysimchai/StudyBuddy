@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.SessionViewHolder> {
 
-    private Context context;
+    private final Context context;
     private ArrayList<Session> sessionList;
 
     public SessionsAdapter(Context context, ArrayList<Session> sessionList) {
@@ -40,10 +40,15 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.Sessio
 
         holder.tvCourse.setText(session.getCourseName());
         holder.tvTopic.setText(session.getTopic());
-        holder.tvMeta.setText(
-                session.getTime() + " • " + session.getLocation() + " • "
-                        + session.getParticipants().size() + "/" + session.getMaxParticipants()
-        );
+
+        String meta = session.getTime() + " - " + session.getLocation() + " - "
+                + session.getParticipants().size() + "/" + session.getMaxParticipants();
+
+        if (session.getDistanceKm() > 0 && session.getDistanceKm() < Double.MAX_VALUE) {
+            meta = meta + " - " + String.format("%.1f km away", session.getDistanceKm());
+        }
+
+        holder.tvMeta.setText(meta);
 
         holder.btnOpen.setOnClickListener(v -> {
             Intent intent = new Intent(context, SessionDetailsActivity.class);

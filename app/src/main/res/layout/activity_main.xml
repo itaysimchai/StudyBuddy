@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Find study sessions from Firebase"
+            android:text="Find, create, and join study sessions"
             android:textColor="#CBD5E1"
             android:textSize="14sp"
             android:layout_marginTop="4dp" />
@@ -57,7 +57,7 @@
         android:orientation="horizontal"
         android:background="#FFFFFF"
         android:padding="8dp"
-        android:weightSum="2">
+        android:weightSum="4">
 
         <Button
             android:id="@+id/btnNavHome"
@@ -70,11 +70,33 @@
             android:backgroundTint="#2563EB" />
 
         <Button
+            android:id="@+id/btnCreateSession"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="Create"
+            android:textAllCaps="false"
+            android:textColor="#2563EB"
+            android:backgroundTint="#DBEAFE" />
+
+        <Button
+            android:id="@+id/btnNearbySessions"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="Nearby"
+            android:textAllCaps="false"
+            android:textColor="#2563EB"
+            android:backgroundTint="#DBEAFE" />
+
+        <Button
             android:id="@+id/btnNavProfile"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="6dp"
             android:text="Profile"
             android:textAllCaps="false"
             android:textColor="#2563EB"

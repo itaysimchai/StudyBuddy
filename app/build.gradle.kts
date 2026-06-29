@@ -44,8 +44,10 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.firestore)
+    implementation(libs.play.services.auth)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
