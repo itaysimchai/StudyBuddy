@@ -1,7 +1,7 @@
 # StudyBuddy — Final Project Reflection Document
 
 **Course:** Advanced Topics in App Innovation, Reichman University
-**Team:** Itay Simchai *(add teammate names here)*
+**Team:** Itay Simchai, Guy Mugrabi, Rom Puritz, Shelly Diskin, Ariel Ben Moshe
 **GitHub Repository:** https://github.com/itaysimchai/StudyBuddy
 
 ---
