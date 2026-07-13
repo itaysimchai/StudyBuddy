@@ -24,6 +24,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Lists all sessions from Firestore sorted by distance from the user's
+ * current GPS location (phone-capability requirement). Sessions without
+ * coordinates are pushed to the end of the list.
+ */
 public class NearbySessionsActivity extends AppCompatActivity {
 
     private TextView tvNearbyStatus;

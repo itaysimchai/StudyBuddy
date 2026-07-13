@@ -12,15 +12,33 @@
           "package_name": "com.example.studybuddy"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "462495641762-ke6iaoo7vbm3mnq72dhi698uhrd8smdp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.studybuddy",
+            "certificate_hash": "5cae77d210319366555e1acbf958dc886f90f442"
+          }
+        },
+        {
+          "client_id": "462495641762-g9b56ce85to9udfn1cdlnd36lb1obbi7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCimI3Gh99rhvPT7umIaSbTlaXRN1ciNlY"
+          "current_key": "AIzaSyAfHyeFfr3sUxyUABDr1QmH0RBRLYEZe0A"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "462495641762-g9b56ce85to9udfn1cdlnd36lb1obbi7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

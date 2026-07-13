@@ -21,6 +21,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Home screen: shows every study session stored in the Firestore
+ * "Sessions" collection, with live text search over course name and topic,
+ * plus navigation to the other pages of the app.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;

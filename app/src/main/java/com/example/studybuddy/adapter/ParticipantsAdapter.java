@@ -21,6 +21,12 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
         this.participants = participants;
     }
 
+    /** Replaces the displayed participants with a fresh list from Firestore. */
+    public void updateList(ArrayList<Student> newParticipants) {
+        this.participants = newParticipants;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ParticipantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

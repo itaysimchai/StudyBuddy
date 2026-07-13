@@ -1,61 +1,48 @@
-StudyBuddy – Android App
-Overview
+# StudyBuddy – Android App
 
-StudyBuddy is an Android application designed to help students find and join study sessions.
-The app allows users to browse available sessions, search for specific courses or topics, view session details, and join or leave study groups.
+StudyBuddy helps students find, create, and join study sessions around them.
+All data is stored in **Cloud Firestore** — nothing is hard-coded — and the app
+uses the phone's **GPS** to attach real coordinates to sessions and to sort
+sessions by distance from the user.
 
-The goal of this project was to demonstrate dynamic data handling, multiple screens, and user interaction using Android development tools.
+Final project for *Advanced Topics in App Innovation*, Reichman University.
 
-Features
+## Pages
 
-View a list of available study sessions
+| Page | What it does |
+|---|---|
+| **Login** | Sign in with Google, or with email/password (bonus auth method) |
+| **Home** | All sessions from Firestore, with live search by course/topic |
+| **Create Session** | Form + "Use GPS" button that attaches the phone's current location |
+| **Nearby Sessions** | Sessions sorted by distance from the user's current GPS position |
+| **Session Details** | Full info + participants list; join/leave updates Firestore atomically |
+| **Profile** | Signed-in user's name and email, plus logout |
 
-Search sessions by course name or topic
+## Firebase
 
-View session details including time, location, and participants
+- **Firestore** — single `Sessions` collection; each document holds course,
+  topic, time, location name, GPS coordinates, capacity, and the participants array
+- **Authentication** — Google Sign-In + Email/Password (second method, bonus)
+- **Analytics** — events: `login`, `sign_up`, `sessions_loaded`, `session_created`,
+  `session_opened`, `session_participation_changed`
+- **Crashlytics** — connected via the Crashlytics Gradle plugin
 
-Join or leave a study session
+## Phone capability
 
-View participants in each session
+GPS via `LocationManager` (last known location):
+- *Create Session* attaches the creator's coordinates to the session
+- *Nearby Sessions* computes and sorts by distance (`Location.distanceBetween`)
 
-Profile screen with user information and preferences
+## Running the project
 
-Bottom navigation between Home and Profile screens
+1. Clone the repo and open it in Android Studio.
+2. The app requires a `google-services.json` in `app/` belonging to a Firebase
+   project with Google + Email/Password sign-in enabled and the debug SHA-1
+   fingerprint registered (Firebase console → Project settings → Add fingerprint).
+3. Run on an emulator or device with Google Play services.
+   On the emulator, set a location in Extended Controls → Location so the GPS
+   features have data to work with.
 
-Screens
-Home Screen
+## Tech
 
-Displays all study sessions using a RecyclerView.
-Users can search sessions and open a session’s details.
-
-Session Details Screen
-
-Shows detailed information about a session including:
-
-Course name
-
-Topic
-
-Time
-
-Location
-
-List of participants
-
-Users can join or leave the session.
-
-Profile Screen
-
-Displays user information and study preferences.
-
-Technologies Used
-
-Java
-
-Android Studio
-
-RecyclerView
-
-Intents for navigation between screens
-
-Local dynamic data (FakeData class)
+Java · AndroidX · RecyclerView · Firebase (Auth, Firestore, Analytics, Crashlytics) · Google Sign-In

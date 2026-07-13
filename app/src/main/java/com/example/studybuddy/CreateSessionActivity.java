@@ -22,6 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Form for creating a new study session. Uses the phone's GPS
+ * (last known location) to attach real coordinates to the session
+ * before saving it to Firestore.
+ */
 public class CreateSessionActivity extends AppCompatActivity {
 
     private EditText etCourseName, etTopic, etTime, etLocationName, etMaxParticipants;

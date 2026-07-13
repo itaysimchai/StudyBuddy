@@ -17,6 +17,11 @@ import com.example.studybuddy.model.Session;
 
 import java.util.ArrayList;
 
+/**
+ * RecyclerView adapter for session cards. Shows course, topic, time,
+ * location, capacity and (when available) distance, and opens
+ * SessionDetailsActivity when a card's button is tapped.
+ */
 public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.SessionViewHolder> {
 
     private final Context context;

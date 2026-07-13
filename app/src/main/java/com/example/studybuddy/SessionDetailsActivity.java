@@ -15,10 +15,17 @@ import com.example.studybuddy.model.Student;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Shows the full details of a study session and lets the signed-in user
+ * join or leave it. The participants list is updated inside a Firestore
+ * transaction so two users acting at the same time cannot overwrite
+ * each other's changes.
+ */
 public class SessionDetailsActivity extends AppCompatActivity {
 
     private TextView tvTitle, tvInfo;
@@ -71,47 +78,10 @@ public class SessionDetailsActivity extends AppCompatActivity {
             analytics.logEvent("session_opened", bundle);
         }
 
-        btnJoinLeave.setOnClickListener(v -> {
-            if (session == null) return;
-
-            FirebaseUser user = auth.getCurrentUser();
-            if (user == null) {
-                Toast.makeText(this, "Please sign in first.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (session.getDocumentId() == null || session.getDocumentId().isEmpty()) {
-                Toast.makeText(this, "Cannot update this session without a Firestore ID.", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            if (!joined) {
-                if (session.getParticipants().size() >= session.getMaxParticipants()) {
-                    Toast.makeText(this, "This session is full.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String displayName = user.getDisplayName() == null ? "Signed-in Student" : user.getDisplayName();
-                String email = user.getEmail() == null ? "Google Account" : user.getEmail();
-                session.getParticipants().add(new Student(displayName, email, user.getUid()));
-                joined = true;
-                btnJoinLeave.setText("Leave Session");
-            } else {
-                ArrayList<Student> participants = session.getParticipants();
-                for (int i = 0; i < participants.size(); i++) {
-                    if (user.getUid().equals(participants.get(i).getUid())) {
-                        participants.remove(i);
-                        break;
-                    }
-                }
-                joined = false;
-                btnJoinLeave.setText("Join Session");
-            }
-
-            saveParticipants();
-        });
+        btnJoinLeave.setOnClickListener(v -> toggleParticipation());
     }
 
+    /** Returns true when the signed-in user already appears in the participants list. */
     private boolean isCurrentUserParticipant() {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null || session == null) return false;
@@ -125,20 +95,73 @@ public class SessionDetailsActivity extends AppCompatActivity {
         return false;
     }
 
-    private void saveParticipants() {
-        db.collection("Sessions")
-                .document(session.getDocumentId())
-                .update("participants", session.getParticipants())
-                .addOnSuccessListener(unused -> {
-                    participantsAdapter.notifyDataSetChanged();
+    /**
+     * Joins or leaves the session inside a Firestore transaction: the
+     * participants list is re-read from the database, modified, and written
+     * back atomically, so a stale local copy can never erase other users.
+     */
+    private void toggleParticipation() {
+        if (session == null) return;
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString("course_name", session.getCourseName());
-                    bundle.putString("action", joined ? "join" : "leave");
-                    analytics.logEvent("session_participation_changed", bundle);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "Please sign in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (session.getDocumentId() == null || session.getDocumentId().isEmpty()) {
+            Toast.makeText(this, "Cannot update this session without a Firestore ID.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        boolean joining = !joined;
+        DocumentReference sessionRef = db.collection("Sessions").document(session.getDocumentId());
+
+        db.runTransaction(transaction -> {
+            Session freshSession = transaction.get(sessionRef).toObject(Session.class);
+            if (freshSession == null) {
+                throw new IllegalStateException("Session no longer exists.");
+            }
+
+            ArrayList<Student> participants = freshSession.getParticipants();
+
+            // Remove the user first so joining twice can never duplicate them.
+            for (int i = participants.size() - 1; i >= 0; i--) {
+                if (user.getUid().equals(participants.get(i).getUid())) {
+                    participants.remove(i);
+                }
+            }
+
+            if (joining) {
+                if (participants.size() >= freshSession.getMaxParticipants()) {
+                    throw new IllegalStateException("This session is full.");
+                }
+                // Email/password users have no display name, so fall back to
+                // the part of their email before the @.
+                String email = user.getEmail() == null ? "Unknown Email" : user.getEmail();
+                String displayName = user.getDisplayName();
+                if (displayName == null || displayName.isEmpty()) {
+                    displayName = email.contains("@") ? email.substring(0, email.indexOf('@')) : "Student";
+                }
+                participants.add(new Student(displayName, email, user.getUid()));
+            }
+
+            transaction.update(sessionRef, "participants", participants);
+            return participants;
+        }).addOnSuccessListener(updatedParticipants -> {
+            joined = joining;
+            btnJoinLeave.setText(joined ? "Leave Session" : "Join Session");
+
+            // Refresh the local copy and the list on screen with the real data.
+            session.setParticipants(new ArrayList<>(updatedParticipants));
+            participantsAdapter.updateList(session.getParticipants());
+
+            Bundle bundle = new Bundle();
+            bundle.putString("course_name", session.getCourseName());
+            bundle.putString("action", joined ? "join" : "leave");
+            analytics.logEvent("session_participation_changed", bundle);
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
+        );
     }
 }
